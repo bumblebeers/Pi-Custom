@@ -1,0 +1,4 @@
+{
+  "defaultProvider": "qwen-local",
+  "defaultModel": "REPLACE_ME: must equal the Qwen model id set in models.json"
+}

@@ -102,6 +102,31 @@ secret). See the checklist for exact steps.
 
 ---
 
+## Model configuration
+
+`agent/models.json` ships with a **single provider** (`qwen-local`, an
+OpenAI-compatible endpoint such as vLLM) and **placeholder** values you replace
+at deploy time:
+
+- `baseUrl` — your Qwen endpoint, e.g. `http://HOST:PORT/v1`
+- `apiKey` — a key if your endpoint needs one; any non-empty string if it doesn't
+- `models[0].id` — the model id your endpoint serves
+
+`agent/settings.json` sets `defaultProvider` (`qwen-local`) and `defaultModel`
+(**must equal** the `id` in `models.json`). `compat.maxTokensField` is set to
+`max_tokens` for OpenAI-compatible servers; vLLM applies the model's shipped
+sampling defaults, so no extra sampling config is needed.
+
+**Adding DeepSeek-V4 (DS4) later** — the design swaps the model only *after* the
+harness is validated on Qwen, so the read on each change stays clean. When that
+time comes, add a second provider (or a second entry in `models[]`) to
+`models.json`, then switch live with the `/model` command. Qwen-specific compat
+flags exist if needed later (e.g. `thinkingFormat: "qwen"`, plus a
+`thinkingLevelMap` where `null` hides an unsupported level) — add them only if a
+model actually requires them.
+
+---
+
 ## The two-layer context model
 
 Pi auto-loads `AGENTS.md` files from the current directory upward, **plus** the
