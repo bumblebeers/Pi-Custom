@@ -32,11 +32,13 @@ container.
 
 - [ ] Clone this repo into the container (or onto a path the container can see).
 - [ ] From the repo root, link or copy `agent/` into `~/.pi/agent/` (see the
-      README "How to deploy" section; symlink recommended). The five items are
-      `AGENTS.md`, `APPEND_SYSTEM.md`, `models.json`, `settings.json`, and the
-      `extensions/` directory.
+      README "How to deploy" section; symlink recommended). The items are
+      `AGENTS.md`, `APPEND_SYSTEM.md`, `models.json`, `settings.json`, the
+      `extensions/` directory, and the `skills/` directory. Do **not** link
+      `agent/SYSTEM.draft.md` — it is an inert draft (see `STATUS.md` design
+      question 2 before activating it).
 
-**Done when:** `ls -l ~/.pi/agent` shows those five items (as symlinks or copies).
+**Done when:** `ls -l ~/.pi/agent` shows those items (as symlinks or copies).
 
 ---
 
@@ -57,8 +59,11 @@ container.
 ## 4. Confirm extensions load and `AGENTS.md` stacks
 
 - [ ] Start Pi in a scratch directory: `mkdir -p ~/scratch && cd ~/scratch && pi`.
-- [ ] Confirm the extensions loaded: the `/plan`, `/build`, and `/todos` commands
-      exist (type `/` to list), and the footer shows a posture status.
+- [ ] Confirm the extensions loaded: the `/plan`, `/build`, `/todos`, and
+      `/skill:formalization-gate` commands exist (type `/` to list), and the footer
+      shows a posture status. (This pass added more extensions and features —
+      `STATUS.md` has the full per-feature validation list and the open design
+      questions.)
 - [ ] Test context stacking: create a project with its own `AGENTS.md` holding a
       distinctive line, then start Pi there:
   ```sh

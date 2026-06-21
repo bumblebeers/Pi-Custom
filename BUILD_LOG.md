@@ -7,6 +7,47 @@ build's narrative in plain language: what was done, what was decided, what's nex
 
 ---
 
+## 2026-06-21 — Implementation pass (web)
+
+**Goal:** work the Build Ledger from *Human–AI Collaboration in The Augment* —
+implement what's clearly buildable, prototype the uncertain, document blockers.
+Full status, blockers, and design questions live in `STATUS.md`; this is the short
+journal entry.
+
+**Verified against real Pi source (v0.79.9), not memory.** The Pi source isn't in
+this repo, so it was read from upstream `earendil-works/pi`. Facts that shaped the
+build:
+- `before_agent_start` handlers CHAIN their systemPrompt edits, so multiple
+  extensions can each append safely.
+- Extensions have NO in-process model-call API → the drift monitor and sub-agents
+  must spawn a `pi` subprocess (`pi -p --mode json --no-session`), as Pi's own
+  subagent example does.
+- A full-replace `SYSTEM.md` drops the tool snippets + guidelines (tool schemas
+  are still sent) → scaffolding must be reintroduced.
+- Pi natively supports the Claude-Code `SKILL.md` format.
+
+**Built (detail in STATUS.md):** item 1 plan/build pre-flight + graduated autonomy
+(`/build` | `vetted` | `auto`); item 2 dual-context auto-loader (`NOTES.md`); item
+3 SYSTEM.md inventory + inert `SYSTEM.draft.md`; item 4 formalization-gate as a Pi
+skill; item 5 drift-monitor scaffold (off by default); item 6 general sub-agent
+`delegate` scaffold. Plus steering/README/checklist updates and `STATUS.md`.
+
+**Method / divergence:** the source investigation was fanned out to four parallel
+sub-agents (each returning verbatim source + URLs), then the consequential joints
+re-checked directly — itself an instance of the lateral-partitioning principle
+(independent reading tasks, distilled outputs). **Nothing was executed** — no
+runtime here; "verified" means matches source, not observed working.
+
+**Open (in STATUS.md):** no in-process model call (use subprocess); execution-
+grounded drift verdict blocked by read-only-PLAN in workers; writing sub-agents
+blocked likewise; NOTES vs PROJECT_LOG; SYSTEM.md keep/drop + activation; monitor
+spec-source; throughput tuning; "run to completion" mechanism.
+
+**Next (operator):** run the local validation in `STATUS.md` / the checklist, then
+bring the eight design questions back to the design conversation.
+
+---
+
 ## 2026-06-20 — First-stage build (web)
 
 **Goal:** produce the first-stage harness artifacts in this config repo, per the
