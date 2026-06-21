@@ -43,20 +43,29 @@ approving every keystroke.
 ├── README.md                  ← you are here (layout + deploy model)
 ├── BUILD_LOG.md               ← running build journal (decisions, what's next)
 ├── LOCAL-DEPLOY-CHECKLIST.md  ← operator's local install + validation steps
+├── STATUS.md                  ← implementation-pass status: done / remaining / blocked
 │
 ├── agent/                     ← THIS DIRECTORY DEPLOYS TO  ~/.pi/agent/
 │   ├── AGENTS.md              ← global cross-project standing brief
 │   ├── APPEND_SYSTEM.md       ← minimal non-negotiable posture rules (system layer)
+│   ├── SYSTEM.draft.md        ← DRAFT full-replace base prompt (inert until renamed SYSTEM.md)
 │   ├── models.json            ← model/provider config (Qwen placeholder)
 │   ├── settings.json          ← default provider/model + Pi settings
-│   └── extensions/            ← auto-discovered by Pi on startup
-│       ├── plan-mode-inverted.ts   ← the centerpiece (custom)
-│       ├── protected-paths.ts      ← write-protect steering files (configured)
-│       ├── dirty-repo-guard.ts     ← nudge small, frequent commits (upstream copy)
-│       └── todo.ts                 ← in-session task decomposition (upstream copy)
+│   ├── extensions/            ← auto-discovered by Pi on startup
+│   │   ├── plan-mode-inverted.ts   ← centerpiece: inverted posture + pre-flight + autonomy
+│   │   ├── dual-context-loader.ts  ← auto-load the agent-writable NOTES.md
+│   │   ├── protected-paths.ts      ← write-protect steering files (configured)
+│   │   ├── dirty-repo-guard.ts     ← nudge small, frequent commits (upstream copy)
+│   │   ├── todo.ts                 ← in-session task decomposition (upstream copy)
+│   │   ├── subagent-delegate.ts    ← general isolated-context worker (scaffold)
+│   │   └── drift-monitor.ts        ← fidelity check vs spec (scaffold, off by default)
+│   └── skills/
+│       └── formalization-gate/SKILL.md  ← /skill:formalization-gate (model- or user-invoked)
 │
+├── docs/
+│   └── system-prompt-inventory.md  ← Pi default-prompt inventory + SYSTEM.md plan
 └── templates/
-    └── PROJECT_LOG.md         ← copy into each project as agent-writable memory
+    └── PROJECT_LOG.md         ← copy into each project as the session log
 ```
 
 **The deploy rule is simple: everything inside `agent/` maps 1:1 to
@@ -86,7 +95,13 @@ ln -sf "$PWD/agent/APPEND_SYSTEM.md" "$PI/APPEND_SYSTEM.md"
 ln -sf "$PWD/agent/models.json"      "$PI/models.json"
 ln -sf "$PWD/agent/settings.json"    "$PI/settings.json"
 ln -sf "$PWD/agent/extensions"       "$PI/extensions"
+ln -sf "$PWD/agent/skills"           "$PI/skills"
 ```
+
+> `agent/SYSTEM.draft.md` is intentionally **not** linked. It is a *draft*
+> full-replace base prompt; activating it (renaming to `SYSTEM.md`) is a
+> consequential change pending the keep/drop decisions in
+> `docs/system-prompt-inventory.md`. Link it only after that review.
 
 ### Option B — copy
 
@@ -136,13 +151,16 @@ global `~/.pi/agent/AGENTS.md`, and stacks them (global first, then project).
   working discipline and the plan/build posture. Write-protected, so the agent
   can't quietly rewrite its own instructions.
 - **Per-project layer** — each project directory gets its own `AGENTS.md`
-  (project specifics, which *you* author) and a `PROJECT_LOG.md` (the agent's
-  session memory, which *the agent* writes). Copy `templates/PROJECT_LOG.md` into
-  a new project to start.
+  (project specifics, which *you* author) and two agent-writable files: a
+  `PROJECT_LOG.md` (the chronological session log) and a `NOTES.md` (terse working
+  memory, auto-loaded into context each turn by the `dual-context-loader`
+  extension). Copy `templates/PROJECT_LOG.md` into a new project to start.
 
 This is the whole memory system on purpose: **memory is plain files + git you can
 read**, not a hidden store. The human-authored steering (`AGENTS.md`) is
-protected; the agent-writable memory (`PROJECT_LOG.md`) is not.
+write-protected; the agent-writable files (`PROJECT_LOG.md`, `NOTES.md`) are not.
+(Whether `NOTES.md` should stay distinct from `PROJECT_LOG.md` is an open design
+question — see `STATUS.md`.)
 
 ---
 
