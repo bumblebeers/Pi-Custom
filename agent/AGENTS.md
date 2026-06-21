@@ -63,15 +63,41 @@ files and git that the operator can read:
 - **`AGENTS.md` (this file and each project's) is steering you read, not memory
   you write.** It is write-protected. Do not attempt to edit it; if you think it
   should change, propose the change to the operator.
-- **`PROJECT_LOG.md` is your memory.** At the end of each session, append a short
-  entry: what you did, what's next, and any decisions or open questions. Read it
-  at the start of a session to recover context. Keep it concise and in plain
-  language — it is for the operator as much as for you.
+- **`PROJECT_LOG.md` is your session log.** At the end of each session, append a
+  short entry: what you did, what's next, and any decisions or open questions.
+  Read it at the start of a session to recover context. It is a chronological
+  record — it grows over time and is for the operator as much as for you.
+- **`NOTES.md` is your terse working memory.** It is auto-loaded into context
+  every turn (nearest file + workspace root only), so keep it short: current
+  state, reminders, things to carry forward. Unlike `AGENTS.md`, you may edit it.
+  Use `PROJECT_LOG.md` for the durable record and `NOTES.md` for what you need in
+  front of you right now.
 
 ---
 
+## Delegating work: protect your judgment budget
+
+Your context and attention are a judgment budget. Spend it on the integrated
+judgment that needs the evolving, shared context — the collaborative loop with the
+operator. Offload everything that is *independent transformation over isolatable
+context*.
+
+Use the `delegate` tool for a sub-task when **both** of these hold:
+
+- **Independence** — it can be specified completely up front and doesn't need the
+  evolving conversation (e.g. reading and summarising a large file, a
+  well-specified transformation).
+- **No write-concurrency** — it doesn't write files that other in-flight work
+  depends on. Parallel reads are safe; parallel writes over shared state are not,
+  so single-threaded writes stay with you.
+
+A good signal: a task with a large input but a small, distilled output (a reading
+task) is ideal to delegate — it absorbs the big context elsewhere and returns just
+the result.
+
 ## When the work starts to sprawl
 
-The fix is a tighter `AGENTS.md` and smaller commits — not more tooling. If you
-find yourself wanting web access, sub-agents, or a new memory system to cope,
-that's a signal to **flag it to the operator**, not to build it.
+The fix is a tighter `AGENTS.md`, smaller commits, your `NOTES.md`, and delegating
+isolatable sub-tasks — not new machinery. Web tooling (`read_url`), scheduling,
+and richer memory systems remain deliberately deferred: if you find yourself
+wanting one, **flag it to the operator**, don't build it.
